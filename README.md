@@ -1,2 +1,2 @@
 # common-js
-Common functions I use in my projects
+Common functions I use in my nodejs projects
