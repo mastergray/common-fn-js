@@ -50,7 +50,7 @@ module.exports = COMMON = {
 
   // :: (STRING, STRING) -> PROMISE(STRING)
   // Writes text to given filename:
-  "writeText":(filename, data) => COMMON.writeFile(filename, data, 'utf8');
+  "writeText":(filename, data) => COMMON.writeFile(filename, data, 'utf8'),
 
   // :: (STRING, JSON) -> PROMISE(STRING)
   // Write JSON to given filename:
@@ -98,7 +98,7 @@ module.exports = COMMON = {
    // "Reverse" assoc operation; takes the object before binding identifer  to value of given object:
    "rassoc": (obj) => (property, value) => COMMON.assoc(property, value)(obj),
 
-   // :: (OBJECT, (ACC, KEY, VALUE, OBJECT) -> ACC, ACC) -> ACC
+   // foldObj :: (OBJECT, (ACC, KEY, VALUE, OBJECT) -> ACC, ACC) -> ACC
    // Reduces the given object to the given acculmator using the given function:
    "foldObj":(obj, fn, acc) => Object.keys(obj).reduce((acc, key) => {
      return fn(acc, key, obj[key], obj);
@@ -111,7 +111,7 @@ module.exports = COMMON = {
     */
 
     // Return promise of variable number of argument from command line:
-    // :: ([STRING]) -> PROMISE({STRING:STRING})
+    // VARGS :: ([STRING]) -> PROMISE({STRING:STRING})
     "VARGS": (vargs) => new Promise((resolve, reject) => {
       try {
         vargs = process.argv.slice(2).reduce((result, varg, index) => {
@@ -124,14 +124,14 @@ module.exports = COMMON = {
       }
     }),
 
-    // :: (*) -> *
+    // log  (*) -> *
     // Prints value to console then returns value:
     "log":(x) => {
       console.log(x);
       return x;
-    }
+    },
 
-    // :: (*) -> *
+    // err :: (*) -> *
     // Prints value to error then returns value:
     "err":(x) => {
       console.error(x);
@@ -146,7 +146,7 @@ module.exports = COMMON = {
 
      // CONSTRUCTOR :: (DATE, DATE) -> TIMER
      // Finds the amount of time that's elapsed between a "start" DATE object and an "end" DATE object:
-     "timer": (START, END) => ({
+     "Timer": (START, END) => ({
        "start":(start) => COMMON.timer(start || Date.now(), END),
        "stop":(end) => COMMON.timer(START, end || Date.now()),
        "elapse":(fn) => fn === undefined ? END - START : fn(END-START)
@@ -154,10 +154,10 @@ module.exports = COMMON = {
 
      // Namespace for standarized time formatting methods:
      "timeFormat":{
-       // :: STRING -> STRING
+       // :timeFormat.appendZero : STRING -> STRING
        // Appends 0 to a month less than 10:
        "appendZero":(val) => val < 10 ? "0" + val : val.toString(),
-       // :: (DATE) -> STRING
+       // timeFormat.printDate :: (DATE) -> STRING
        // Returns date formatted as "mm-dd-yy":
        "printDate":(date) => {
          let month = COMMON.timeFormat.appendZero(date.getMonth()+1),
@@ -165,7 +165,7 @@ module.exports = COMMON = {
              year = COMMON.timeFormat.appendZero(date.getFullYear());
          return `${month}-${day}-${year.slice(2)}`;
        },
-       // :: (DATE) -> STRING
+       // timeFormat.printTime :: (DATE) -> STRING
        // Returns time formatted as "hours:minutes:seconds:milliseconds":
        "printTime":(date) => {
          let hours = COMMON.timeFormat.appendZero(date.getHours()),
@@ -176,7 +176,7 @@ module.exports = COMMON = {
        }
      },
 
-     // :: (DATE) -> STRING
+     // timestamp :: (DATE) -> STRING
      // Prints formatted timestamp using given date:
      // NOTE: If not date object is given, current time is used:
      "timestamp": (date) => {
