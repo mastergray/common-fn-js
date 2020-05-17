@@ -1,4 +1,5 @@
 const fs = require("fs");
+const path = require("path");
 
 module.exports = COMMON = {
 
@@ -67,6 +68,64 @@ module.exports = COMMON = {
   // Returns filename without path or extension:
   // NOTE: https://stackoverflow.com/questions/4250364/how-to-trim-a-file-extension-from-a-string-in-javascript
   "nameOfFile":(filename) => path.basename(filename).split('.').slice(0, -1).join('.'),
+
+  // readDir :: (STRING) -> PROMISE([STRING])
+  // Returns a promise for an array of paths for the given directory filepath:
+  "readDir":(dirname) => new Promise((resolve, reject) => {
+    fs.readdir(dirname, (err, files) => {
+      if (err) {
+        reject(err);
+      } else {
+        resolve(files);
+      }
+    });
+  }),
+
+  // fileStats :: (STRING) -> PROMISE(stats)
+  // Returns promise of file state for the given filename:
+  "fileStats":(filename) => new Promise((resolve, reject) => {
+    fs.stat(filename, (err, stats) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(stats);
+      }
+    });
+  }),
+
+  // listFiles:: (STRING, STRING) -> PROMISE([STRING])
+  // Returns an array of every file in every subdirectory of given directory filted by optional file extension:
+  // NOTE: File extension argument includes "."
+  "listFiles":(dirname, extname) => {
+
+    // :: (Array, string) -> Promise([string])
+    let readPath = (list, filepath) => COMMON.fileStats(filepath).then((stat) => {
+        // Add filepath to list:
+        if (stat.isFile()) {
+          // Check extension if set:
+          if (extname) {
+            if (path.extname(filepath) === extname) {
+              list.push(filepath);
+            }
+          } else {
+            list.push(filepath);
+          }
+        }
+        // read every file in subdirectory:
+        if (stat.isDirectory()) {
+          return COMMON.readDir(filepath).then((files) => {
+            return files.map((file) => readPath(list, `${filepath}/${file}`));
+          }).then((promises) => {
+            return Promise.all(promises);
+          })
+        }
+      // Return promise of list:
+    }).then(() => list);
+
+    // Recursively read all files of all subdirectories of given dirname:
+    return readPath([], dirname, extname);
+
+  },
 
   /**
    *

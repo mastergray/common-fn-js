@@ -1,5 +1,9 @@
 # common-fn-js
-### A collection of functions I often use in my node.js projects
+#### A collection of functions I often use in my node.js projects
+
+I was tired of either rewriting this stuff, or keeping track of different files of
+different versions - so I figured I would group everything into one public place.
+For better or worse.
 
 To Use:
 ```
@@ -22,6 +26,9 @@ writeFile | Write data to given filename using given encoding, returning a promi
 writeText | Writes text to given filename, returning promise of filename | (STRING) -> PROMISE(STRING)
 writeJSON | Write JSON to given filename, returning promise of filename | (STRING) -> PROMISE(STRING)
 nameOfFile | Returns filename without path or extension | (STRING) -> PROMISE(STRING)
+readDir |  Returns a promise for an array of paths for the given directory filepath | (STRING) -> PROMISE([STRING])
+fileStats | Returns promise of file stats for the given filename | (STRING) -> PROMISE(fs.Stats)
+listFiles | Returns an array of every file in every subdirectory of given directory filted by optional file extension (STRING, STRING) -> PROMISE([STRING])| (STRING, STRING) -> PROMISE([STRING])
 
 
 ### Functional Programming Methods
@@ -29,8 +36,8 @@ Method Name | Description | Signature
 ------------|---------- | -----------
 composeAll | Transforms a list of unary functions into a single unary function | ([FUNCTION]) -> FUNCTION
 flatten | Returns a single array of elements from an array that may contain other arrays | ([[\*]]) -> ([\*])
-assoc | Binds the given property with the given value to the given object | (STRING, *) -> (OBJECT) -> OBJECT
-rassoc | "Reverse" assoc operation; takes the object before binding identifer  to value of given object |  (OBJECT) -> (STRING, *) ->  OBJECT
+assoc | Binds the given property with the given value to the given object | (STRING, \*) -> (OBJECT) -> OBJECT
+rassoc | "Reverse" assoc operation; takes the object before binding identifer  to value of given object |  (OBJECT) -> (STRING, \*) ->  OBJECT
 foldObj | Reduces the given object to the given acculmator using the given function | (OBJECT, (ACC, KEY, VALUE, OBJECT) -> ACC, ACC) -> ACC
 
 ### CLI Methods
