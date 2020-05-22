@@ -27,12 +27,11 @@ module.exports = COMMON = {
 
   // :: (STRING) -> PROMISE(JSON)
   // Loads file as JSON, returning promise of read JSON:
-  "loadJSON":(filename) => COMMON.loadFile(filename).then((file) => {
+  "loadJSON":(filename) => COMMON.loadFile(filename).then(async (file) => {
     try {
-      let json = JSON.parse(file);
-      resolve(json);
+      return JSON.parse(file);
     } catch (err) {
-      reject(err);
+      throw err;
     }
   }),
 
