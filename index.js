@@ -240,6 +240,43 @@ module.exports = COMMON = {
      "timestamp": (date) => {
        date = date || new Date();
        return `[${COMMON.timeFormat.printDate(date)}|${COMMON.timeFormat.printTime(date)}]`;
-     }
+     },
+
+  /**
+   *
+   *  Parsing Methods
+   *
+   */
+
+    // parseArray :: [a], (b, a, NUMBER, [a] -> b, b), b -> b
+    // Recursivley applies function to every element of an array, returning a result:
+    "parseArray":(arr, fn, result) => {
+      arr.forEach((elem, index) => {
+        if (elem instanceof Array) {
+          result = COMMON.parseArray(elem, fn, result);
+        } else if (elem instanceof Object) {
+          result = COMMON.parseObj(elem, fn, result);
+        } else {
+          result = fn(result, elem, index, arr);
+        }
+      });
+      return result;
+    },
+
+    // parseArray :: {x:y}, (b, y, x, {x:y}) -> b, b -> b
+    // Recursivley applies function to every property of an object, returning a result:
+    "parseObj":(obj, fn, result) => {
+      Object.keys(obj).forEach((key) => {
+        let val = obj[key];
+        if (val instanceof Array) {
+          result = COMMON.parseArray(val, fn, result);
+        } else if (val instanceof Object) {
+          result = COMMON.parseObj(val, fn, result);
+        } else {
+          result = fn(result, val, key, obj);
+        }
+      });
+      return result;
+    }
 
 }
