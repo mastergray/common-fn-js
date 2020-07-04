@@ -1,5 +1,6 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require("fs");                         // Native module for handling file system
+const path = require("path");                     // Native module for handling path names
+const exec = require('child_process').exec;       // Native module for running external processes
 
 module.exports = COMMON = {
 
@@ -196,6 +197,18 @@ module.exports = COMMON = {
       return x;
     },
 
+    // exexAsync :: (STRING) -> PROMISE(STRING)
+    // Wraps external process in a Promise:
+    "execAsync":(command) => new Promise((resolve, reject) => {
+      exec(command, function (err, stdout, stderr) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(stdout ? stdout : stderr);
+        }
+      });
+    }),
+
     /**
      *
      *  Time/Date Methods
@@ -249,7 +262,7 @@ module.exports = COMMON = {
    */
 
     // parseArray :: [a], (b, a, NUMBER, [a] -> b, b), b -> b
-    // Recursivley applies function to every element of an array, returning a result:
+    // Recursively applies function to every element of an array, returning a result:
     "parseArray":(arr, fn, result) => {
       arr.forEach((elem, index) => {
         if (elem instanceof Array) {
@@ -263,8 +276,8 @@ module.exports = COMMON = {
       return result;
     },
 
-    // parseArray :: {x:y}, (b, y, x, {x:y}) -> b, b -> b
-    // Recursivley applies function to every property of an object, returning a result:
+    // parseObj :: {x:y}, (b, y, x, {x:y}) -> b, b -> b
+    // Recursively applies function to every property of an object, returning a result:
     "parseObj":(obj, fn, result) => {
       Object.keys(obj).forEach((key) => {
         let val = obj[key];
