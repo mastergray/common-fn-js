@@ -218,8 +218,8 @@ module.exports = COMMON = {
      // CONSTRUCTOR :: (DATE, DATE) -> TIMER
      // Finds the amount of time that's elapsed between a "start" DATE object and an "end" DATE object:
      "Timer": (START, END) => ({
-       "start":(start) => COMMON.timer(start || Date.now(), END),
-       "stop":(end) => COMMON.timer(START, end || Date.now()),
+       "start":(start) => COMMON.Timer(start || Date.now(), END),
+       "stop":(end) => COMMON.Timer(START, end || Date.now()),
        "elapse":(fn) => fn === undefined ? END - START : fn(END-START)
      }),
 
